@@ -22,3 +22,4 @@ env:
   DRONE_GITHUB_SERVER: https://github.com
   DRONE_SERVER_HOST: lab3-drone.ddns.net
   DRONE_SERVER_PROTO: http
+  DRONE_REPOSITORY_FILTER: Lab3-Spotify
