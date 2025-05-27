@@ -1,2 +1,2 @@
-# walrus-helm
-CI/CD pipeline for walrus
+# dove
+CI/CD pipeline for all project under Lab3-Spotify

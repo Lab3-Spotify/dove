@@ -1,0 +1,67 @@
+n8n:
+  replicaCount: 1
+
+  image:
+    repository: n8nio/n8n
+    tag: 1.38.1
+    pullPolicy: IfNotPresent
+
+  service:
+    type: ClusterIP
+    port: 80
+    targetPort: 5678
+
+  ingress:
+    enabled: true
+    className: "nginx"
+    annotations:
+      nginx.ingress.kubernetes.io/rewrite-target: /
+    hosts:
+      - host: lab3-n8n.ddns.net
+        paths:
+          - path: /
+            pathType: Prefix
+  env:
+    N8N_BASIC_AUTH_ACTIVE: true
+    N8N_HOST: 0.0.0.0
+    N8N_PORT: 5678
+    N8N_SECURE_COOKIE: false
+    N8N_RUNNERS_ENABLED: true
+
+
+    TZ: Asia/Taipei
+    DB_TYPE: postgresdb
+    DB_POSTGRESDB_HOST: n8n-db.n8n.svc.cluster.local
+    DB_POSTGRESDB_PORT: 5432
+    DB_POSTGRESDB_SCHEMA: public
+
+  
+
+db:
+  replicaCount: 1
+
+  image:
+    repository: postgres
+    tag: "14"
+    pullPolicy: IfNotPresent
+
+  service:
+    type: ClusterIP
+    port: 5432
+    targetPort: 5432
+
+  persistence:
+    size: 10Gi
+
+  env:
+    POSTGRES_PORT: 5432
+    # POSTGRES_SERVICE: {{ .Release.Name }}-db # 不知道要不要
+
+
+# resources:
+#   limits:
+#     cpu: 500m
+#     memory: 512Mi
+#   requests:
+#     cpu: 250m
+#     memory: 256Mi
