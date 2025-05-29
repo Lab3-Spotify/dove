@@ -29,10 +29,3 @@ helm upgrade --install ingress-nginx ingress-nginx/ingress-nginx -n ingress-ngin
 helm history -n ingress-nginx ingress-nginx
 
 
-
-
-
-helm repo add bitnami https://charts.bitnami.com/bitnami
-helm repo update
-# 去windows上的git bash做一次看能不能開驗證網頁
-helm template postgres bitnami/postgresql   --kubeconfig "$HOME/.kube/config"   --namespace n8n   --set auth.username=n8n   --set auth.password=kLlyQTYN5JI8G4bVxBt7PKh37CYqq1Jd   --set auth.database=n8n
