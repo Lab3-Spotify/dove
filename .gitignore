@@ -2,3 +2,5 @@
 /n8n/n8n-data/serverless/data/*
 /n8n/n8n-data/serverless/__pycache__
 /n8n/n8n-data/serverless/utils/__pycache__
+.gitsecret/keys/random_seed
+!*.secret
