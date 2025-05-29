@@ -1,1 +1,4 @@
 */secrets/*
+/n8n/n8n-data/serverless/data/*
+/n8n/n8n-data/serverless/__pycache__
+/n8n/n8n-data/serverless/utils/__pycache__

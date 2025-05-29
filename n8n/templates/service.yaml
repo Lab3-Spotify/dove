@@ -42,3 +42,20 @@ spec:
   resources:
     requests:
       storage: {{ .Values.db.persistence.size | default "10Gi" }}
+
+---
+
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}-python-serverless
+  labels:
+    app: {{ .Release.Name }}-python-serverless
+spec:
+  type: {{ .Values.pysvc.service.type }}
+  selector:
+    app: {{ .Release.Name }}-python-serverless
+  ports:
+    - port: {{ .Values.pysvc.service.port }}
+      targetPort: {{ .Values.pysvc.service.targetPort }}

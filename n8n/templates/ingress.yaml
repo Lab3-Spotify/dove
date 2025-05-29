@@ -19,3 +19,27 @@ spec:
                 name: {{ .Release.Name }}
                 port:
                   number: {{ .Values.n8n.service.port }}
+
+---
+
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: python-serverless-ingress
+  annotations:
+      {{- range $key, $value := .Values.pysvc.ingress.annotations }}
+      {{ $key }}: "{{ $value }}"
+      {{- end }}
+spec:
+  ingressClassName: {{ .Values.pysvc.ingress.className }}
+  rules:
+  - host: {{ .Values.pysvc.ingress.host }}
+    http:
+      paths:
+      - path: /python-serverless(/|$)(.*)
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            name: {{ .Release.Name }}-python-serverless
+            port:
+              number: {{ .Values.pysvc.service.port }}

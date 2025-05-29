@@ -12,12 +12,20 @@ spec:
       labels:
         app: {{ .Release.Name }}
     spec:
+      volumes:
+        - name: {{ .Release.Name }}-data
+          hostPath:
+            path: /run/desktop/mnt/host/d/Spotify-workspace/familiarity-playlist/dove/{{ .Release.Name }}/{{ .Release.Name }}-data
+            type: DirectoryOrCreate
       containers:
         - name: {{ .Release.Name }}
           image: "{{ .Values.n8n.image.repository }}:{{ .Values.n8n.image.tag }}"
           imagePullPolicy: {{ .Values.n8n.image.pullPolicy }}
           ports:
             - containerPort: {{ .Values.n8n.service.targetPort }}
+          volumeMounts:
+            - name: {{ .Release.Name }}-data
+              mountPath: /home/node/{{ .Release.Name }}-data
           env:
             {{- range $key, $value := .Values.n8n.env }}
             - name: {{ $key }}
@@ -64,3 +72,44 @@ spec:
         - name: db-data
           persistentVolumeClaim:
             claimName: {{ .Release.Name }}-db-pvc
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-python-serverless
+spec:
+  replicas: {{ .Values.pysvc.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}-python-serverless
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}-python-serverless
+    spec:
+      volumes:
+        - name: {{ .Release.Name }}-data
+          hostPath:
+            path: /run/desktop/mnt/host/d/Spotify-workspace/familiarity-playlist/dove/{{ .Release.Name }}/{{ .Release.Name }}-data
+            type: DirectoryOrCreate
+      containers:
+        - name: {{ .Release.Name }}-python-serverless
+          image: "{{ .Values.pysvc.image.repository }}:{{ .Values.pysvc.image.tag }}"
+          imagePullPolicy: {{ .Values.pysvc.image.pullPolicy }}
+          workingDir: /usr/src/app/{{ .Release.Name }}-data/serverless
+          command: ["python", "main.py"]
+          ports:
+            - containerPort: {{ .Values.pysvc.service.targetPort }}
+          volumeMounts:
+            - name: {{ .Release.Name }}-data
+              mountPath: /usr/src/app/{{ .Release.Name }}-data
+          env:
+            {{- range $key, $value := .Values.pysvc.env }}
+            - name: {{ $key }}
+              value: "{{ $value }}"
+            {{- end }}
+          envFrom:
+            - secretRef:
+                name: {{ .Release.Name }}-n8n-env
