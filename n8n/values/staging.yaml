@@ -3,7 +3,7 @@ n8n:
 
   image:
     repository: n8nio/n8n
-    tag: 1.38.1
+    tag: stable
     pullPolicy: IfNotPresent
 
   service:
@@ -21,14 +21,14 @@ n8n:
         paths:
           - path: /
             pathType: Prefix
+
   env:
     N8N_BASIC_AUTH_ACTIVE: true
     N8N_HOST: 0.0.0.0
     N8N_PORT: 5678
     N8N_SECURE_COOKIE: false
     N8N_RUNNERS_ENABLED: true
-
-
+    WEBHOOK_URL: "http://lab3-n8n.ddns.net"
     TZ: Asia/Taipei
     DB_TYPE: postgresdb
     DB_POSTGRESDB_HOST: n8n-db.n8n.svc.cluster.local
@@ -55,13 +55,33 @@ db:
 
   env:
     POSTGRES_PORT: 5432
-    # POSTGRES_SERVICE: {{ .Release.Name }}-db # 不知道要不要
 
 
-# resources:
-#   limits:
-#     cpu: 500m
-#     memory: 512Mi
-#   requests:
-#     cpu: 250m
-#     memory: 256Mi
+
+pysvc:
+  replicaCount: 1
+
+  image:
+    repository: popopopony/lab3-n8n-python-serverless
+    tag: latest
+    pullPolicy: IfNotPresent
+
+  service:
+    type: ClusterIP
+    port: 80
+    targetPort: 8080
+
+  ingress:
+    enabled: true
+
+    className: nginx
+
+    annotations:
+      nginx.ingress.kubernetes.io/use-regex: "true"
+      nginx.ingress.kubernetes.io/rewrite-target: /$2
+
+    hosts:
+      - host: lab3-n8n.ddns.net
+        paths:
+          - path: /python-serverless(/|$)(.*)
+            pathType: Prefix
