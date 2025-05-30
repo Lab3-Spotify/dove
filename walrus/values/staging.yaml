@@ -1,0 +1,61 @@
+walrus: 
+  replicaCount: 1
+
+  image:
+    repository: popopopony/walrus
+    tag: latest
+    pullPolicy: Always
+
+  service:
+    type: ClusterIP
+    port: 80
+    targetPort: 8000
+
+  ingress:
+    enabled: true
+    className: nginx
+    host: lab3-walrus.ddns.net
+    annotations:
+      nginx.ingress.kubernetes.io/ssl-redirect: "false"
+    
+  env: {}
+
+
+redis: 
+  replicaCount: 1
+
+  image:
+    repository: redis
+    tag: 7.4.2
+    pullPolicy: IfNotPresent
+
+  service:
+    type: ClusterIP
+    port: 6379
+    targetPort: 6379
+
+  persistence:
+    accessMode: ReadWriteOnce
+    size: 8Gi
+    storageClass: hostpath 
+
+  env: {}
+
+
+db: 
+  replicaCount: 1
+
+  image:
+    repository: postgres
+    tag: 14
+    pullPolicy: IfNotPresent
+
+  service:
+    type: ClusterIP
+    port: 5432
+    targetPort: 5432
+
+  persistence:
+    accessMode: ReadWriteOnce
+    size: 10Gi
+    storageClass: hostpath

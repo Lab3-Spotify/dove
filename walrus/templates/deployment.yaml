@@ -1,0 +1,135 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}
+spec:
+  replicas: {{ .Values.walrus.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}
+    spec:
+      containers:
+        - name: {{ .Release.Name }}
+          image: "{{ .Values.walrus.image.repository }}:{{ .Values.walrus.image.tag }}"
+          imagePullPolicy: {{ .Values.walrus.image.pullPolicy }}
+          ports:
+            - containerPort: {{ .Values.walrus.service.targetPort }}
+          # entrypoint: ["/bin/sh", "-c"]
+          # command: ["tail",  "-f", "/dev/null"]
+          command: ["/bin/sh", "-c", "/usr/src/app/entrypoint.sh"]
+          env:
+            {{- range $key, $value := .Values.walrus.env }}
+            - name: {{ $key }}
+              value: "{{ $value }}"
+            {{- end }}
+          envFrom:
+            - secretRef:
+                name: {{ .Release.Name }}-env
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-redis
+spec:
+  replicas: {{ .Values.redis.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}-redis
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}-redis
+    spec:
+      volumes:
+        - name: redis-data
+          persistentVolumeClaim:
+            claimName: {{ .Release.Name }}-redis-pvc
+      containers:
+        - name: {{ .Release.Name }}
+          image: "{{ .Values.redis.image.repository }}:{{ .Values.redis.image.tag }}"
+          imagePullPolicy: {{ .Values.redis.image.pullPolicy }}
+          ports:
+            - containerPort: {{ .Values.redis.service.targetPort }}
+          volumeMounts:
+            - name: redis-data
+              mountPath: /data
+          env:
+            {{- range $key, $value := .Values.redis.env }}
+            - name: {{ $key }}
+              value: "{{ $value }}"
+            {{- end }}
+          envFrom:
+            - secretRef:
+                name: {{ .Release.Name }}-redis-env
+
+---
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ .Release.Name }}-redis-pvc
+spec:
+  accessModes:
+    - {{ .Values.redis.persistence.accessMode }}
+  storageClassName: {{ .Values.redis.persistence.storageClass }}
+  resources:
+    requests:
+      storage: {{ .Values.redis.persistence.size }}
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-db
+spec:
+  replicas: {{ .Values.db.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}-db
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}-db
+    spec:
+      volumes:
+        - name: db-data
+          persistentVolumeClaim:
+            claimName: {{ .Release.Name }}-db-pvc
+      containers:
+        - name: {{ .Release.Name }}
+          image: "{{ .Values.db.image.repository }}:{{ .Values.db.image.tag }}"
+          imagePullPolicy: {{ .Values.db.image.pullPolicy }}
+          ports:
+            - containerPort: {{ .Values.db.service.targetPort }}
+          volumeMounts:
+            - name: db-data
+              mountPath: /var/lib/postgresql/data
+          env:
+            {{- range $key, $value := .Values.db.env }}
+            - name: {{ $key }}
+              value: "{{ $value }}"
+            {{- end }}
+          envFrom:
+            - secretRef:
+                name: {{ .Release.Name }}-db-env
+
+---
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ .Release.Name }}-db-pvc
+spec:
+  accessModes:
+    - {{ .Values.db.persistence.accessMode }}
+  storageClassName: {{ .Values.db.persistence.storageClass }}
+  resources:
+    requests:
+      storage: {{ .Values.db.persistence.size }}
