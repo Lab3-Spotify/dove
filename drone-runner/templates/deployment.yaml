@@ -1,0 +1,99 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-walrus
+  namespace: drone
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}-walrus
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}-walrus
+    spec:
+      containers:
+        - name: {{ .Release.Name }}-walrus
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+            {{- range $key, $value := .Values.env }}
+            - name: {{ $key }}
+              value: "{{ $value }}"
+            {{- end }}
+            {{- range $key, $value := index .Values "walrus-env" }}
+            - name: {{ $key }}
+              value: "{{ $value }}"
+            {{- end }}
+          envFrom:
+            - secretRef:
+                name: {{ .Release.Name }}-env
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-heron
+  namespace: drone
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}-heron
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}-heron
+    spec:
+      containers:
+        - name: {{ .Release.Name }}-heron
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+            {{- range $key, $value := .Values.env }}
+            - name: {{ $key }}
+              value: "{{ $value }}"
+            {{- end }}
+            {{- range $key, $value := index .Values "heron-env" }}
+            - name: {{ $key }}
+              value: "{{ $value }}"
+            {{- end }}
+          envFrom:
+            - secretRef:
+                name: {{ .Release.Name }}-env
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-dove
+  namespace: drone
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}-dove
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}-dove
+    spec:
+      containers:
+        - name: {{ .Release.Name }}-dove
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+            {{- range $key, $value := .Values.env }}
+            - name: {{ $key }}
+              value: "{{ $value }}"
+            {{- end }}
+            {{- range $key, $value := index .Values "dove-env" }}
+            - name: {{ $key }}
+              value: "{{ $value }}"
+            {{- end }}
+          envFrom:
+            - secretRef:
+                name: {{ .Release.Name }}-env
