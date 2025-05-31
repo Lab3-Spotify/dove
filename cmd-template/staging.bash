@@ -1,13 +1,33 @@
-# =============== drone ===============
+# =============== drone server ===============
 
 # update staging settings
-helm upgrade --install drone-svc . -f values/staging.yaml -f secrets/staging.yaml --namespace drone-svc --create-namespace
+helm upgrade --install drone-svc . -f values/staging.yaml -f secrets/staging.yaml --namespace drone --create-namespace
 
 # force recreate pods
-kubectl rollout restart deployment drone-svc -n drone-svc
+kubectl rollout restart deployment drone-svc -n drone
 
 # check release history
-helm history drone-svc -n drone-svc
+helm history drone-svc -n drone
+
+
+
+
+
+# =============== drone runner ===============
+
+# update staging settings
+helm upgrade --install drone-runner . -f values/staging.yaml -f secrets/staging.yaml --namespace drone --create-namespace
+
+# force recreate pods (each repo has its own deployment)
+kubectl rollout restart deployment drone-runner-walrus -n drone
+
+# check release history
+helm history drone-runner-walrus -n drone
+
+
+
+
+
 
 
 # =============== n8n ===============
@@ -27,6 +47,9 @@ helm upgrade --install ingress-nginx ingress-nginx/ingress-nginx -n ingress-ngin
 
 # check release history
 helm history -n ingress-nginx ingress-nginx
+
+
+
 
 
 
