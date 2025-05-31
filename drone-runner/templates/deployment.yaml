@@ -13,6 +13,7 @@ spec:
       labels:
         app: {{ .Release.Name }}-walrus
     spec:
+      serviceAccountName: drone-walrus-runner
       containers:
         - name: {{ .Release.Name }}-walrus
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -47,6 +48,7 @@ spec:
       labels:
         app: {{ .Release.Name }}-heron
     spec:
+      serviceAccountName: drone-heron-runner
       containers:
         - name: {{ .Release.Name }}-heron
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -79,8 +81,9 @@ spec:
   template:
     metadata:
       labels:
-        app: {{ .Release.Name }}-dove
+        app: {{ .Release.Name }}-dove 
     spec:
+      serviceAccountName: drone-dove-runner
       containers:
         - name: {{ .Release.Name }}-dove
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"

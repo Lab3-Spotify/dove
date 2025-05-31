@@ -12,6 +12,7 @@ env:
   DRONE_RUNNER_NAME: drone-runner
   DRONE_LOGS_DEBUG: true
   DRONE_RUNNER_NAMESPACE: drone
+  DRONE_NAMESPACE_DEFAULT: drone
 
 
 # DRONE_RUNNER_LABELS 格式要求不能用 / (repo=Lab3-Spotify/walrus 不合法)
