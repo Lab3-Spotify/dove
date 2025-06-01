@@ -8,6 +8,10 @@ metadata:
     {{- end }}
 spec:
   ingressClassName: {{ .Values.walrus.ingress.className }}
+  tls:
+    - hosts:
+        - {{ .Values.walrus.ingress.host }}
+      secretName: {{ .Release.Name }}-tls-secret
   rules:
     - host: {{ .Values.walrus.ingress.host }}
       http:

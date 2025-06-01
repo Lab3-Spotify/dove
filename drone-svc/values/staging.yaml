@@ -15,7 +15,8 @@ ingress:
   className: nginx
   host: lab3-drone.ddns.net
   annotations:
-    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+    cert-manager.io/cluster-issuer: letsencrypt
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
 
 env:
   DRONE_SERVER_ROOT: http://lab3-drone.ddns.net

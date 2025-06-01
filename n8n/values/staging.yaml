@@ -15,12 +15,13 @@ n8n:
     enabled: true
     className: "nginx"
     annotations:
+      cert-manager.io/cluster-issuer: letsencrypt
+      nginx.ingress.kubernetes.io/ssl-redirect: "true"
       nginx.ingress.kubernetes.io/rewrite-target: /
-    hosts:
-      - host: lab3-n8n.ddns.net
-        paths:
-          - path: /
-            pathType: Prefix
+    host: lab3-n8n.ddns.net
+    paths:
+      path: /
+      pathType: Prefix
 
   env:
     N8N_BASIC_AUTH_ACTIVE: true
@@ -73,15 +74,14 @@ pysvc:
 
   ingress:
     enabled: true
-
     className: nginx
 
     annotations:
+      cert-manager.io/cluster-issuer: letsencrypt
+      nginx.ingress.kubernetes.io/ssl-redirect: "true"
       nginx.ingress.kubernetes.io/use-regex: "true"
       nginx.ingress.kubernetes.io/rewrite-target: /$2
-
-    hosts:
-      - host: lab3-n8n.ddns.net
-        paths:
-          - path: /python-serverless(/|$)(.*)
-            pathType: Prefix
+    host: lab3-n8n.ddns.net
+    paths:
+        path: /python-serverless(/|$)(.*)
+        pathType: ImplementationSpecific

@@ -71,6 +71,28 @@ kubectl rollout restart deployment walrus-redis -n walrus
 
 
 
+# =============== HTTPS ===============
+
+# 部署 證書請求服務
+kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.14.4/cert-manager.yaml
+
+# 查看 證書請求服務
+kubectl get pods -n cert-manager
+
+# 部署 cert-manager
+kubectl apply -f clusterissuer.yaml
+
+# 查看 cert-manager
+kubectl get clusterissuer
+
+
+
+
+
+
+
+
+
 # =============== 權限設置 ===============
 
 # 建立新的權限帳號(在 drone namespace)
