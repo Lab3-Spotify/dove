@@ -16,7 +16,8 @@ walrus:
     className: nginx
     host: lab3-walrus.ddns.net
     annotations:
-      nginx.ingress.kubernetes.io/ssl-redirect: "false"
+      cert-manager.io/cluster-issuer: letsencrypt
+      nginx.ingress.kubernetes.io/ssl-redirect: "true"
     
   env: {}
 

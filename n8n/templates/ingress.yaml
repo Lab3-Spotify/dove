@@ -8,12 +8,16 @@ metadata:
     {{- end }}
 spec:
   ingressClassName: {{ .Values.n8n.ingress.className }}
+  tls:
+    - hosts:
+        - {{ .Values.n8n.ingress.host }}
+      secretName: {{ .Release.Name }}-tls-secret
   rules:
     - host: {{ .Values.n8n.ingress.host }}
       http:
         paths:
-          - path: /
-            pathType: Prefix
+          - path: {{ .Values.n8n.ingress.paths.path }}
+            pathType: {{ .Values.n8n.ingress.paths.pathType }}
             backend:
               service:
                 name: {{ .Release.Name }}
@@ -32,12 +36,16 @@ metadata:
       {{- end }}
 spec:
   ingressClassName: {{ .Values.pysvc.ingress.className }}
+  tls:
+    - hosts:
+        - {{ .Values.pysvc.ingress.host }}
+      secretName: {{ .Release.Name }}-tls-secret
   rules:
   - host: {{ .Values.pysvc.ingress.host }}
     http:
       paths:
-      - path: /python-serverless(/|$)(.*)
-        pathType: ImplementationSpecific
+      - path: {{ .Values.pysvc.ingress.paths.path }}
+        pathType: {{ .Values.pysvc.ingress.paths.pathType }}
         backend:
           service:
             name: {{ .Release.Name }}-python-serverless
