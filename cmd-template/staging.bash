@@ -9,6 +9,16 @@ kubectl rollout restart deployment drone-svc -n drone
 # check release history
 helm history drone-svc -n drone
 
+# set up local-path
+kubectl apply -f https://raw.githubusercontent.com/rancher/local-path-provisioner/master/deploy/local-path-storage.yaml
+
+# check local-path pods
+kubectl get pods -n local-path-storage
+
+
+# 刪除DB pvc
+kubectl delete pvc -l app=drone-svc-db -n drone
+
 
 
 
@@ -23,6 +33,9 @@ kubectl rollout restart deployment drone-runner-walrus -n drone
 
 # check release history
 helm history drone-runner-walrus -n drone
+
+# note: 記得去github上綁drone的webhook
+# https://lab3-drone.ddns.net/hook 
 
 
 
@@ -41,6 +54,10 @@ kubectl rollout restart deployment n8n -n n8n
 
 # force recreate n8n-db pods
 kubectl rollout restart deployment n8n-db -n n8n
+
+
+
+
 
 # ===============ingress-controller ===============
 
@@ -98,7 +115,7 @@ kubectl get clusterissuer
 # 建立新的權限帳號(在 drone namespace)
 kubectl create serviceaccount drone-dove-runner -n drone
 
-# 授權
+# 建立權限
 kubectl create clusterrolebinding drone-walrus-runner-admin   --clusterrole=cluster-admin   --serviceaccount=drone:drone-walrus-runner
 
 # 賦予一個sa某個ns的大部分權力
@@ -127,6 +144,9 @@ kubectl config view --minify -o jsonpath='{.clusters[0].cluster.server}'
 
 # 為超級帳號建立永久token
 kubectl apply -f authorize-drone-ci.yaml
+
+# 查看永久token
+kubectl get secret drone-ci-token -n kube-system -o jsonpath="{.data.token}" | base64 --decode
 
 
 # 檢查一個帳號在所有namespace下的權限

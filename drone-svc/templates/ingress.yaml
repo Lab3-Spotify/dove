@@ -3,17 +3,17 @@ kind: Ingress
 metadata:
   name: {{ .Release.Name }}-ingress
   annotations:
-    {{- range $key, $value := .Values.ingress.annotations }}
+    {{- range $key, $value := .Values.drone.ingress.annotations }}
     {{ $key }}: "{{ $value }}"
     {{- end }}
 spec:
-  ingressClassName: {{ .Values.ingress.className }}
+  ingressClassName: {{ .Values.drone.ingress.className }}
   tls:
   - hosts:
-      - {{ .Values.ingress.host }}
+      - {{ .Values.drone.ingress.host }}
     secretName: {{ .Release.Name }}-tls-secret
   rules:
-    - host: {{ .Values.ingress.host }}
+    - host: {{ .Values.drone.ingress.host }}
       http:
         paths:
           - path: /
@@ -22,4 +22,4 @@ spec:
               service:
                 name: {{ .Release.Name }}
                 port:
-                  number: {{ .Values.service.port }}
+                  number: {{ .Values.drone.service.port }}

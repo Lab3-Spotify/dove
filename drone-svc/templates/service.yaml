@@ -5,9 +5,26 @@ metadata:
   labels:
     app: {{ .Release.Name }}
 spec:
-  type: {{ .Values.service.type }}
+  type: {{ .Values.drone.service.type }}
   selector:
     app: {{ .Release.Name }}
   ports:
-    - port: {{ .Values.service.port }}
-      targetPort: {{ .Values.service.targetPort }}
+    - port: {{ .Values.drone.service.port }}
+      targetPort: {{ .Values.drone.service.targetPort }}
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}-db
+  labels:
+    app: {{ .Release.Name }}-db
+spec:
+  ports:
+    - port: {{ .Values.db.service.port }}
+      targetPort: {{ .Values.db.service.targetPort }}
+      name: postgres
+  clusterIP: None
+  selector:
+    app: {{ .Release.Name }}-db
