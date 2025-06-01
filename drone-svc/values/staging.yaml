@@ -1,26 +1,47 @@
-replicaCount: 1
+drone:
+  replicaCount: 1
 
-image:
-  repository: drone/drone
-  tag: "2"
-  pullPolicy: IfNotPresent
+  image:
+    repository: drone/drone
+    tag: "2"
+    pullPolicy: IfNotPresent
 
-service:
-  type: ClusterIP
-  port: 80
-  targetPort: 80
+  service:
+    type: ClusterIP
+    port: 80
+    targetPort: 80
 
-ingress:
-  enabled: true
-  className: nginx
-  host: lab3-drone.ddns.net
-  annotations:
-    cert-manager.io/cluster-issuer: letsencrypt
-    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+  ingress:
+    enabled: true
+    className: nginx
+    host: lab3-drone.ddns.net
+    annotations:
+      cert-manager.io/cluster-issuer: letsencrypt
+      nginx.ingress.kubernetes.io/ssl-redirect: "true"
 
-env:
-  DRONE_SERVER_ROOT: http://lab3-drone.ddns.net
-  DRONE_GITHUB_SERVER: https://github.com
-  DRONE_SERVER_HOST: lab3-drone.ddns.net
-  DRONE_SERVER_PROTO: http
-  DRONE_REPOSITORY_FILTER: Lab3-Spotify
+  env:
+    DRONE_SERVER_ROOT: http://lab3-drone.ddns.net
+    DRONE_GITHUB_SERVER: https://github.com
+    DRONE_SERVER_HOST: lab3-drone.ddns.net
+    DRONE_SERVER_PROTO: http
+    DRONE_REPOSITORY_FILTER: Lab3-Spotify
+    DRONE_DATABASE_DRIVER: postgres
+
+db:
+  replicaCount: 1
+
+  image:
+    repository: postgres
+    tag: "14"
+    pullPolicy: IfNotPresent
+
+  service:
+    type: ClusterIP
+    port: 5432
+    targetPort: 5432
+
+  persistence:
+    size: 10Gi
+
+  env:
+    POSTGRES_PORT: 5432
