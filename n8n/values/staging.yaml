@@ -83,5 +83,5 @@ pysvc:
       nginx.ingress.kubernetes.io/rewrite-target: /$2
     host: lab3-n8n.ddns.net
     paths:
-        path: /python-serverless(/|$)(.*)
-        pathType: ImplementationSpecific
+      path: /python-serverless(/|$)(.*)
+      pathType: ImplementationSpecific
