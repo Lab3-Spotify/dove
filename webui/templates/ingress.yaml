@@ -1,0 +1,25 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ .Release.Name }}-ingress
+  annotations:
+    {{- range $key, $value := .Values.webui.ingress.annotations }}
+    {{ $key }}: "{{ $value }}"
+    {{- end }}
+spec:
+  ingressClassName: {{ .Values.webui.ingress.className }}
+  tls:
+    - hosts:
+        - {{ .Values.webui.ingress.host }}
+      secretName: {{ .Release.Name }}-tls-secret
+  rules:
+    - host: {{ .Values.webui.ingress.host }}
+      http:
+        paths:
+          - path: {{ .Values.webui.ingress.paths.path }}
+            pathType: {{ .Values.webui.ingress.paths.pathType }}
+            backend:
+              service:
+                name: {{ .Release.Name }}
+                port:
+                  number: {{ .Values.webui.service.port }}

@@ -1,0 +1,54 @@
+webui:
+  replicaCount: 1
+
+  image:
+    repository: ghcr.io/open-webui/open-webui
+    tag: v0.6.11   # 不要用白癡 v0.6.12 內部有錯誤
+    pullPolicy: IfNotPresent
+
+  service:
+    type: ClusterIP
+    port: 80
+    targetPort: 8080
+
+  ingress:
+    enabled: true
+    className: "nginx"
+    annotations:
+      cert-manager.io/cluster-issuer: letsencrypt
+      nginx.ingress.kubernetes.io/ssl-redirect: "true"
+      nginx.ingress.kubernetes.io/rewrite-target: /
+    host: lab3-gugong.ddns.net
+    paths:
+      path: /
+      pathType: Prefix
+
+  env:
+    WEBUI_AUTH: "True"
+    ENABLE_RAG_WEB_SEARCH: "True"
+    ENABLE_WEBSOCKET_SUPPORT: "True"
+
+    # 看到時候要不要本地起一個 Ollama
+    # RAG_EMBEDDING_ENGINE: "Ollama"
+    # RAG_OLLAMA_BASE_URL: "http://ollama:11434"
+
+  
+
+db:
+  replicaCount: 1
+
+  image:
+    repository: postgres
+    tag: "14"
+    pullPolicy: IfNotPresent
+
+  service:
+    type: ClusterIP
+    port: 5432
+    targetPort: 5432
+
+  persistence:
+    size: 10Gi
+
+  env:
+    POSTGRES_PORT: 5432
