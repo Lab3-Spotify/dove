@@ -1,0 +1,31 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: {{ .Release.Name }}-db-data-pv
+spec:
+  capacity:
+    storage: {{ .Values.db.storage.size }}
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: ""
+  persistentVolumeReclaimPolicy: {{ .Values.db.storage.reclaim_policy }}
+  hostPath:
+    path: {{ tpl .Values.db.storage.hostPathTemplate . }}
+    type: DirectoryOrCreate
+
+---
+
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: {{ .Release.Name }}-redis-data-pv
+spec:
+  capacity:
+    storage: {{ .Values.redis.storage.size }}
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: ""
+  persistentVolumeReclaimPolicy: {{ .Values.redis.storage.reclaim_policy }}
+  hostPath:
+    path: {{ tpl .Values.redis.storage.hostPathTemplate . }}
+    type: DirectoryOrCreate

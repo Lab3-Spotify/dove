@@ -9,15 +9,6 @@ kubectl rollout restart deployment drone-svc -n drone
 # check release history
 helm history drone-svc -n drone
 
-# set up local-path
-kubectl apply -f https://raw.githubusercontent.com/rancher/local-path-provisioner/master/deploy/local-path-storage.yaml
-
-# check local-path pods
-kubectl get pods -n local-path-storage
-
-
-# 刪除DB pvc
-kubectl delete pvc -l app=drone-svc-db -n drone
 
 
 
@@ -110,16 +101,16 @@ kubectl get clusterissuer
 
 
 
-# =============== 權限設置 ===============
+# # =============== 權限設置 ===============
 
-# 建立新的權限帳號(在 drone namespace)
-kubectl create serviceaccount drone-dove-runner -n drone
+# # 建立新的權限帳號(在 drone namespace)
+# kubectl create serviceaccount drone-dove-runner -n drone
 
-# 建立權限
-kubectl create clusterrolebinding drone-walrus-runner-admin   --clusterrole=cluster-admin   --serviceaccount=drone:drone-walrus-runner
+# # 建立權限
+# kubectl create clusterrolebinding drone-walrus-runner-admin   --clusterrole=cluster-admin   --serviceaccount=drone:drone-walrus-runner
 
-# 賦予一個sa某個ns的大部分權力
-kubectl create rolebinding runner-walrus-edit --namespace=walrus --clusterrole=edit --serviceaccount=drone:drone-walrus-runner
+# # 賦予一個sa某個ns的大部分權力
+# kubectl create rolebinding runner-walrus-edit --namespace=walrus --clusterrole=edit --serviceaccount=drone:drone-walrus-runner
 
 
 
@@ -140,7 +131,7 @@ kubectl config view --raw --minify --flatten \
   | base64 -d
 
 # 查看cluster host
-kubectl config view --minify -o jsonpath='{.clusters[0].cluster.server}'
+kubectl config view -o jsonpath='{range .clusters[*]}{.name}{"\t"}{.cluster.server}{"\n"}{end}'
 
 # 為超級帳號建立永久token
 kubectl apply -f authorize-drone-ci.yaml
@@ -153,7 +144,7 @@ kubectl get secret drone-ci-token -n kube-system -o jsonpath="{.data.token}" | b
 # 假設 ServiceAccount 在 walrus namespace
 
 # SA="system:serviceaccount:[USER在的NAMESPACE]:[USERNAME]"
-SA="system:serviceaccount:walrus:drone-ci"
+SA="system:serviceaccount:kube-system:drone-ci"
 NS="walrus"
 
 echo "===== 檢查 drone-ci 在 namespace 'walrus' 下對 ConfigMap 的權限 ====="

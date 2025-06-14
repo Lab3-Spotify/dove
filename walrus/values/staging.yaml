@@ -35,10 +35,10 @@ redis:
     port: 6379
     targetPort: 6379
 
-  persistence:
-    accessMode: ReadWriteOnce
-    size: 8Gi
-    storageClass: hostpath 
+  storage: 
+    size: 10Gi
+    reclaim_policy: Retain
+    hostPathTemplate: /run/desktop/mnt/host/d/Spotify-workspace/familiarity-playlist/dove/{{ .Release.Name }}/{{ .Release.Name }}-redis
 
   env: {}
 
@@ -56,7 +56,7 @@ db:
     port: 5432
     targetPort: 5432
 
-  persistence:
-    accessMode: ReadWriteOnce
+  storage: 
     size: 10Gi
-    storageClass: hostpath
+    reclaim_policy: Retain
+    hostPathTemplate: /run/desktop/mnt/host/d/Spotify-workspace/familiarity-playlist/dove/{{ .Release.Name }}/{{ .Release.Name }}-db

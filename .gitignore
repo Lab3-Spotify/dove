@@ -1,6 +1,12 @@
 */secrets/*
 /n8n/n8n-data/serverless/data/*
+/n8n/n8n-data/n8n-db/*
 /n8n/n8n-data/serverless/__pycache__
 /n8n/n8n-data/serverless/utils/__pycache__
 .gitsecret/keys/random_seed
 !*.secret
+
+webui/webui-db
+drone-svc/drone-svc-db
+walrus/walrus-db
+walrus/walrus-redis

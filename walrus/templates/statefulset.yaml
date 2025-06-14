@@ -1,0 +1,75 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ .Release.Name }}-db
+spec:
+  replicas: {{ .Values.db.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}-db
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}-db
+    spec:
+      volumes:
+        - name: {{ .Release.Name }}-db-data
+          persistentVolumeClaim:
+            claimName: {{ .Release.Name }}-db-data-pvc
+      containers:
+        - name: {{ .Release.Name }}
+          image: "{{ .Values.db.image.repository }}:{{ .Values.db.image.tag }}"
+          imagePullPolicy: {{ .Values.db.image.pullPolicy }}
+          ports:
+            - containerPort: {{ .Values.db.service.targetPort }}
+          volumeMounts:
+            - name: {{ .Release.Name }}-db-data
+              mountPath: /var/lib/postgresql/data
+          env:
+            {{- range $key, $value := .Values.db.env }}
+            - name: {{ $key }}
+              value: "{{ $value }}"
+            {{- end }}
+          envFrom:
+            - secretRef:
+                name: {{ .Release.Name }}-db-env
+
+---
+
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ .Release.Name }}-redis
+spec:
+  serviceName: {{ .Release.Name }}-redis
+  replicas: {{ .Values.redis.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}-redis
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}-redis
+    spec:
+      volumes:
+        - name: {{ .Release.Name }}-redis-data
+          persistentVolumeClaim:
+            claimName: {{ .Release.Name }}-redis-data-pvc
+      containers:
+        - name: {{ .Release.Name }}
+          image: "{{ .Values.redis.image.repository }}:{{ .Values.redis.image.tag }}"
+          imagePullPolicy: {{ .Values.redis.image.pullPolicy }}
+          ports:
+            - name: redis
+              containerPort: {{ .Values.redis.service.targetPort }}
+          volumeMounts:
+            - name: {{ .Release.Name }}-redis-data
+              mountPath: /data
+          env:
+            {{- range $key, $value := .Values.redis.env }}
+            - name: {{ $key }}
+              value: "{{ $value }}"
+            {{- end }}
+          envFrom:
+            - secretRef:
+                name: {{ .Release.Name }}-redis-env

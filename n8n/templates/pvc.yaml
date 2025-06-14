@@ -1,0 +1,42 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ .Release.Name }}-data-pvc
+spec:
+  volumeName: {{ .Release.Name }}-data-pv
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: ""
+  resources:
+    requests:
+      storage: {{ .Values.n8n.storage.size }}
+
+---
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ .Release.Name }}-db-data-pvc
+spec:
+  volumeName: {{ .Release.Name }}-db-data-pv
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: ""
+  resources:
+    requests:
+      storage: {{ .Values.db.storage.size }}
+
+---
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ .Release.Name }}-serverless-data-pvc
+spec:
+  volumeName: {{ .Release.Name }}-serverless-data-pv
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: ""
+  resources:
+    requests:
+      storage: {{ .Values.pysvc.storage.size }}

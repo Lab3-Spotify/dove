@@ -1,0 +1,44 @@
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: drone-walrus-runner-edit
+  namespace: walrus
+subjects:
+  - kind: ServiceAccount
+    name: drone-walrus-runner
+    namespace: drone
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: edit
+
+# ---
+# apiVersion: rbac.authorization.k8s.io/v1
+# kind: RoleBinding
+# metadata:
+#   name: drone-heron-runner-edit
+#   namespace: heron
+# subjects:
+#   - kind: ServiceAccount
+#     name: drone-heron-runner
+#     namespace: drone
+# roleRef:
+#   apiGroup: rbac.authorization.k8s.io
+#   kind: ClusterRole
+#   name: edit
+
+# ---
+# apiVersion: rbac.authorization.k8s.io/v1
+# kind: RoleBinding
+# metadata:
+#   name: drone-dove-runner-edit
+#   namespace: dove
+# subjects:
+#   - kind: ServiceAccount
+#     name: drone-dove-runner
+#     namespace: drone
+# roleRef:
+#   apiGroup: rbac.authorization.k8s.io
+#   kind: ClusterRole
+#   name: edit

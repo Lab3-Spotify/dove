@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: drone-walrus-runner
+  namespace: drone
+
+---
+
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: drone-heron-runner
+  namespace: drone
+
+---
+
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: drone-dove-runner
+  namespace: drone

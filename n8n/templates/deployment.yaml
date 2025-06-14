@@ -14,9 +14,8 @@ spec:
     spec:
       volumes:
         - name: {{ .Release.Name }}-data
-          hostPath:
-            path: /run/desktop/mnt/host/d/Spotify-workspace/familiarity-playlist/dove/{{ .Release.Name }}/{{ .Release.Name }}-data
-            type: DirectoryOrCreate
+          persistentVolumeClaim:
+            claimName: {{ .Release.Name }}-data-pvc
       containers:
         - name: {{ .Release.Name }}
           image: "{{ .Values.n8n.image.repository }}:{{ .Values.n8n.image.tag }}"
@@ -52,10 +51,9 @@ spec:
         app: {{ .Release.Name }}-python-serverless
     spec:
       volumes:
-        - name: {{ .Release.Name }}-data
-          hostPath:
-            path: /run/desktop/mnt/host/d/Spotify-workspace/familiarity-playlist/dove/{{ .Release.Name }}/{{ .Release.Name }}-data
-            type: DirectoryOrCreate
+        - name: {{ .Release.Name }}-serverless-data
+          persistentVolumeClaim:
+            claimName: {{ .Release.Name }}-serverless-data-pvc
       containers:
         - name: {{ .Release.Name }}-python-serverless
           image: "{{ .Values.pysvc.image.repository }}:{{ .Values.pysvc.image.tag }}"
@@ -65,13 +63,13 @@ spec:
           ports:
             - containerPort: {{ .Values.pysvc.service.targetPort }}
           volumeMounts:
-            - name: {{ .Release.Name }}-data
-              mountPath: /usr/src/app/{{ .Release.Name }}-data
+            - name: {{ .Release.Name }}-serverless-data
+              mountPath: /usr/src/app/{{ .Release.Name }}-data/serverless
           env:
             {{- range $key, $value := .Values.pysvc.env }}
             - name: {{ $key }}
               value: "{{ $value }}"
             {{- end }}
-          envFrom:
-            - secretRef:
-                name: {{ .Release.Name }}-n8n-env
+          # envFrom:
+          #   - secretRef:
+          #       name: {{ .Release.Name }}-n8n-env

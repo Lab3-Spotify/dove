@@ -40,8 +40,10 @@ db:
     port: 5432
     targetPort: 5432
 
-  persistence:
-    size: 10Gi
-
   env:
     POSTGRES_PORT: 5432
+
+  storage: 
+    size: 10Gi
+    reclaim_policy: Retain
+    hostPathTemplate: /run/desktop/mnt/host/d/Spotify-workspace/familiarity-playlist/dove/{{ .Release.Name }}/{{ .Release.Name }}-db
