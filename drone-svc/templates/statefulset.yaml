@@ -30,14 +30,9 @@ spec:
             - secretRef:
                 name: {{ .Release.Name }}-db-env
           volumeMounts:
-            - name: db-data
+            - name: {{ .Release.Name }}-db-data
               mountPath: /var/lib/postgresql/data
-  volumeClaimTemplates:
-    - metadata:
-        name: db-data
-      spec:
-        accessModes: ["ReadWriteOnce"]
-        storageClassName: local-path
-        resources:
-          requests:
-            storage: {{ .Values.db.persistence.size }}
+      volumes:
+        - name: {{ .Release.Name }}-db-data
+          persistentVolumeClaim:
+            claimName: {{ .Release.Name }}-db-data-pvc

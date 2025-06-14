@@ -18,10 +18,18 @@ n8n:
       cert-manager.io/cluster-issuer: letsencrypt
       nginx.ingress.kubernetes.io/ssl-redirect: "true"
       nginx.ingress.kubernetes.io/rewrite-target: /
+      nginx.ingress.kubernetes.io/affinity: "cookie"
+      nginx.ingress.kubernetes.io/session-cookie-name: "N8N_ROUTE"
+      nginx.ingress.kubernetes.io/session-cookie-hash: "sha1"
     host: lab3-n8n.ddns.net
     paths:
       path: /
       pathType: Prefix
+
+  storage: 
+    size: 10Gi
+    reclaim_policy: Retain
+    hostPathTemplate: /run/desktop/mnt/host/d/Spotify-workspace/familiarity-playlist/dove/{{ .Release.Name }}/{{ .Release.Name }}-data
 
   env:
     N8N_BASIC_AUTH_ACTIVE: true
@@ -50,6 +58,11 @@ db:
     type: ClusterIP
     port: 5432
     targetPort: 5432
+
+  storage: 
+    size: 10Gi
+    reclaim_policy: Retain
+    hostPathTemplate: /run/desktop/mnt/host/d/Spotify-workspace/familiarity-playlist/dove/{{ .Release.Name }}/{{ .Release.Name }}-data/{{ .Release.Name }}-db
 
   persistence:
     size: 10Gi
@@ -85,3 +98,8 @@ pysvc:
     paths:
       path: /python-serverless(/|$)(.*)
       pathType: ImplementationSpecific
+
+  storage: 
+    size: 10Gi
+    reclaim_policy: Retain
+    hostPathTemplate: /run/desktop/mnt/host/d/Spotify-workspace/familiarity-playlist/dove/{{ .Release.Name }}/{{ .Release.Name }}-data/serverless

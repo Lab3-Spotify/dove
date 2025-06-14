@@ -18,6 +18,10 @@ webui:
       cert-manager.io/cluster-issuer: letsencrypt
       nginx.ingress.kubernetes.io/ssl-redirect: "true"
       nginx.ingress.kubernetes.io/rewrite-target: /
+      nginx.ingress.kubernetes.io/affinity: "cookie"
+      nginx.ingress.kubernetes.io/session-cookie-name: "WEBUI_ROUTE"
+      nginx.ingress.kubernetes.io/session-cookie-hash: "sha1"
+
     host: lab3-gugong.ddns.net
     paths:
       path: /
@@ -47,8 +51,10 @@ db:
     port: 5432
     targetPort: 5432
 
-  persistence:
+  storage: 
     size: 10Gi
+    reclaim_policy: Retain
+    hostPathTemplate: /run/desktop/mnt/host/d/Spotify-workspace/familiarity-playlist/dove/{{ .Release.Name }}/{{ .Release.Name }}-db
 
   env:
     POSTGRES_PORT: 5432
