@@ -1,0 +1,62 @@
+pandawiki:
+  replicaCount: 1
+
+  image:
+    repository: chaitin/pandawiki
+    tag: "1.6.2"
+    pullPolicy: IfNotPresent
+
+  service:
+    type: ClusterIP
+    port: 80
+    targetPort: 2443
+
+  ingress:
+    enabled: true
+    className: "nginx"
+    annotations:
+      cert-manager.io/cluster-issuer: letsencrypt
+      nginx.ingress.kubernetes.io/ssl-redirect: "true"
+      nginx.ingress.kubernetes.io/rewrite-target: /
+      nginx.ingress.kubernetes.io/affinity: "cookie"
+      nginx.ingress.kubernetes.io/session-cookie-name: "PANDAWIKI_ROUTE"
+      nginx.ingress.kubernetes.io/session-cookie-hash: "sha1"
+    host: lab3-pandawiki.ddns.net
+    paths:
+      path: /
+      pathType: Prefix
+
+  env:
+    PANDAWIKI_PORT: 2443
+    PANDAWIKI_HOST: 0.0.0.0
+    TZ: Asia/Taipei
+    DB_TYPE: postgresdb
+    DB_POSTGRESDB_HOST: pandawiki-db.pandawiki.svc.cluster.local
+    DB_POSTGRESDB_PORT: 5432
+    DB_POSTGRESDB_SCHEMA: public
+
+
+
+db:
+  replicaCount: 1
+
+  image:
+    repository: postgres
+    tag: "14"
+    pullPolicy: IfNotPresent
+
+  service:
+    type: ClusterIP
+    port: 5432
+    targetPort: 5432
+
+  storage: 
+    size: 10Gi
+    reclaim_policy: Retain
+    hostPathTemplate: /run/desktop/mnt/host/d/Spotify-workspace/familiarity-playlist/dove/{{ .Release.Name }}/{{ .Release.Name }}-db
+
+  persistence:
+    size: 10Gi
+
+  env:
+    POSTGRES_PORT: 5432 
