@@ -10,3 +10,4 @@ webui/webui-db
 drone-svc/drone-svc-db
 walrus/walrus-db
 walrus/walrus-redis
+pandawiki/pandawiki-db

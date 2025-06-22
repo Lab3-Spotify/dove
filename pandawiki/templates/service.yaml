@@ -1,0 +1,31 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}
+  labels:
+    app: {{ .Release.Name }}
+spec:
+  type: {{ .Values.pandawiki.service.type }}
+  ports:
+    - port: {{ .Values.pandawiki.service.port }}
+      targetPort: {{ .Values.pandawiki.service.targetPort }}
+      protocol: TCP
+      name: http
+  selector:
+    app: {{ .Release.Name }}
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}-db
+  labels:
+    app: {{ .Release.Name }}-db
+spec:
+  clusterIP: None
+  selector:
+    app: {{ .Release.Name }}-db
+  ports:
+    - port: 5432
+      targetPort: 5432 

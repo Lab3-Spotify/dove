@@ -60,12 +60,22 @@ helm history -n ingress-nginx ingress-nginx
 
 
 
+# =============== pandawiki ===============
+# update pandawiki staging settings
+helm upgrade --install pandawiki . -f values/staging.yaml -f secrets/staging.yaml --namespace pandawiki --create-namespace
+
+# force recreate pandawiki pods
+kubectl rollout restart deployment pandawiki -n pandawiki
+
+
+
 
 
 
 # =============== walrus ===============
-# update n8n staging settings
-helm upgrade --install walrus . -f values/staging.yaml -f secrets/staging.yaml --namespace walrus --create-namespace
+# update walrus staging settings
+helm upgrade --install walrus . -f values/staging.yaml -f secrets/st
+aging.yaml --namespace walrus --create-namespace
 
 # force recreate walrus pods
 kubectl rollout restart deployment walrus -n walrus
@@ -73,7 +83,7 @@ kubectl rollout restart deployment walrus -n walrus
 # force recreate walrus-db pods
 kubectl rollout restart deployment walrus-db -n walrus
 
-# force recreate walrus-redus pods
+# force recreate walrus-redis pods
 kubectl rollout restart deployment walrus-redis -n walrus
 
 
