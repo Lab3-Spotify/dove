@@ -50,7 +50,7 @@ spec:
         - name: celery-playlog
           image: "{{ .Values.celery.playlog.image.repository }}:{{ .Values.celery.playlog.image.tag }}"
           imagePullPolicy: {{ .Values.celery.playlog.image.pullPolicy }}
-          command: {{ toJson .Values.celery.playlog.command }}
+          command: ["/bin/sh", "-c", "/usr/src/app/entrypoint-celery.sh", "playlog_q"]
           env:
             {{- range $key, $value := .Values.walrus.env }}
             - name: {{ $key }}
@@ -81,7 +81,7 @@ spec:
         - name: celery-beat
           image: "{{ .Values.celery.beat.image.repository }}:{{ .Values.celery.beat.image.tag }}"
           imagePullPolicy: {{ .Values.celery.beat.image.pullPolicy }}
-          command: {{ toJson .Values.celery.beat.command }}
+          command: ["celery", "-A", "walrus", "beat", "--loglevel=info"]
           env:
             {{- range $key, $value := .Values.walrus.env }}
             - name: {{ $key }}

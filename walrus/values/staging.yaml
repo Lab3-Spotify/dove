@@ -91,7 +91,6 @@ celery:
       repository: popopopony/walrus
       tag: latest
       pullPolicy: IfNotPresent
-    command: ["/usr/src/app/entrypoint-celery.sh", "playlog_q"]
 
   beat:
     replicaCount: 1
@@ -99,4 +98,3 @@ celery:
       repository: popopopony/walrus
       tag: latest
       pullPolicy: IfNotPresent
-    command: ["celery", "-A", "walrus", "beat", "--loglevel=info"]
