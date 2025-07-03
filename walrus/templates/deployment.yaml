@@ -18,8 +18,6 @@ spec:
           imagePullPolicy: {{ .Values.walrus.image.pullPolicy }}
           ports:
             - containerPort: {{ .Values.walrus.service.targetPort }}
-          # entrypoint: ["/bin/sh", "-c"]
-          # command: ["tail",  "-f", "/dev/null"]
           command: ["/bin/sh", "-c", "/usr/src/app/entrypoint.sh"]
           env:
             {{- range $key, $value := .Values.walrus.env }}
@@ -47,10 +45,11 @@ spec:
         app: {{ .Release.Name }}-celery-playlog
     spec:
       containers:
-        - name: celery-playlog
+        - name: {{ .Release.Name }}-celery-playlog
           image: "{{ .Values.celery.playlog.image.repository }}:{{ .Values.celery.playlog.image.tag }}"
           imagePullPolicy: {{ .Values.celery.playlog.image.pullPolicy }}
-          command: ["/bin/sh", "-c", "/usr/src/app/entrypoint-celery.sh", "playlog_q"]
+          command: ["/usr/src/app/entrypoint-celery.sh"]
+          args: ["playlog_q"]
           env:
             {{- range $key, $value := .Values.walrus.env }}
             - name: {{ $key }}
@@ -58,8 +57,17 @@ spec:
             {{- end }}
           envFrom:
             - secretRef:
-                # install secrets from walrus-env
                 name: {{ .Release.Name }}-env
+          readinessProbe:
+            exec:
+              command:
+                - sh
+                - -c
+                - 'pgrep -f "celery worker"'
+            initialDelaySeconds: 30
+            periodSeconds: 30
+            timeoutSeconds: 10
+            failureThreshold: 3
 
 ---
 
@@ -78,7 +86,7 @@ spec:
         app: {{ .Release.Name }}-celery-beat
     spec:
       containers:
-        - name: celery-beat
+        - name: {{ .Release.Name }}-celery-beat
           image: "{{ .Values.celery.beat.image.repository }}:{{ .Values.celery.beat.image.tag }}"
           imagePullPolicy: {{ .Values.celery.beat.image.pullPolicy }}
           command: ["celery", "-A", "walrus", "beat", "--loglevel=info"]
@@ -89,5 +97,24 @@ spec:
             {{- end }}
           envFrom:
             - secretRef:
-                # install secrets from walrus-env
                 name: {{ .Release.Name }}-env
+          readinessProbe:
+            exec:
+              command:
+                - sh
+                - -c
+                - 'pgrep -f "celery beat"'
+            initialDelaySeconds: 30
+            periodSeconds: 30
+            timeoutSeconds: 10
+            failureThreshold: 3
+          livenessProbe:
+            exec:
+              command:
+                - sh
+                - -c
+                - 'pgrep -f "celery beat"'
+            initialDelaySeconds: 30
+            periodSeconds: 30
+            timeoutSeconds: 10
+            failureThreshold: 3
