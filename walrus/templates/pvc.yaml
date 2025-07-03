@@ -25,3 +25,19 @@ spec:
   resources:
     requests:
       storage: {{ .Values.redis.storage.size }}
+
+---
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ .Release.Name }}-rabbitmq-data-pvc
+spec:
+  volumeName: {{ .Release.Name }}-rabbitmq-data-pv
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: ""
+  resources:
+    requests:
+      storage: {{ .Values.rabbitmq.storage.size }}

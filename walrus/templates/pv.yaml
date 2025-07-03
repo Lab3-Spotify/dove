@@ -29,3 +29,20 @@ spec:
   hostPath:
     path: {{ tpl .Values.redis.storage.hostPathTemplate . }}
     type: DirectoryOrCreate
+
+---
+
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: {{ .Release.Name }}-rabbitmq-data-pv
+spec:
+  capacity:
+    storage: {{ .Values.rabbitmq.storage.size }}
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: ""
+  persistentVolumeReclaimPolicy: {{ .Values.rabbitmq.storage.reclaim_policy }}
+  hostPath:
+    path: {{ tpl .Values.rabbitmq.storage.hostPathTemplate . }}
+    type: DirectoryOrCreate
