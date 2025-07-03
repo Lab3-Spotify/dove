@@ -60,3 +60,43 @@ db:
     size: 10Gi
     reclaim_policy: Retain
     hostPathTemplate: /run/desktop/mnt/host/d/Spotify-workspace/familiarity-playlist/dove/{{ .Release.Name }}/{{ .Release.Name }}-db
+
+rabbitmq:
+  replicaCount: 1
+
+  image:
+    repository: rabbitmq
+    tag: 3.13-management
+    pullPolicy: IfNotPresent
+
+  service:
+    type: ClusterIP
+    port: 5672
+    targetPort: 5672
+    managementPort: 15672
+    managementTargetPort: 15672
+
+  storage:
+    size: 10Gi
+    reclaim_policy: Retain
+    hostPathTemplate: /run/desktop/mnt/host/d/Spotify-workspace/familiarity-playlist/dove/{{ .Release.Name }}/{{ .Release.Name }}-rabbitmq
+
+  env: {}
+
+celery:
+  playlog:
+    replicaCount: 1
+    queue: playlog_q
+    image:
+      repository: popopopony/walrus
+      tag: latest
+      pullPolicy: IfNotPresent
+    command: ["/usr/src/app/entrypoint-celery.sh", "playlog_q"]
+
+  beat:
+    replicaCount: 1
+    image:
+      repository: popopopony/walrus
+      tag: latest
+      pullPolicy: IfNotPresent
+    command: ["celery", "-A", "walrus", "beat", "--loglevel=info"]

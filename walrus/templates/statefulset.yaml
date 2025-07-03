@@ -73,3 +73,45 @@ spec:
           envFrom:
             - secretRef:
                 name: {{ .Release.Name }}-redis-env
+
+---
+
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ .Release.Name }}-rabbitmq
+spec:
+  serviceName: {{ .Release.Name }}-rabbitmq
+  replicas: {{ .Values.rabbitmq.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}-rabbitmq
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}-rabbitmq
+    spec:
+      volumes:
+        - name: {{ .Release.Name }}-rabbitmq-data
+          persistentVolumeClaim:
+            claimName: {{ .Release.Name }}-rabbitmq-data-pvc
+      containers:
+        - name: {{ .Release.Name }}
+          image: "{{ .Values.rabbitmq.image.repository }}:{{ .Values.rabbitmq.image.tag }}"
+          imagePullPolicy: {{ .Values.rabbitmq.image.pullPolicy }}
+          ports:
+            - name: amqp
+              containerPort: {{ .Values.rabbitmq.service.targetPort }}
+            - name: management
+              containerPort: {{ .Values.rabbitmq.service.managementTargetPort }}
+          volumeMounts:
+            - name: {{ .Release.Name }}-rabbitmq-data
+              mountPath: /var/lib/rabbitmq
+          env:
+            {{- range $key, $value := .Values.rabbitmq.env }}
+            - name: {{ $key }}
+              value: "{{ $value }}"
+            {{- end }}
+          envFrom:
+            - secretRef:
+                name: {{ .Release.Name }}-rabbitmq-env

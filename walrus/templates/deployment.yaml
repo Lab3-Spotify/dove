@@ -29,3 +29,65 @@ spec:
           envFrom:
             - secretRef:
                 name: {{ .Release.Name }}-env
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-celery-playlog
+spec:
+  replicas: {{ .Values.celery.playlog.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}-celery-playlog
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}-celery-playlog
+    spec:
+      containers:
+        - name: celery-playlog
+          image: "{{ .Values.celery.playlog.image.repository }}:{{ .Values.celery.playlog.image.tag }}"
+          imagePullPolicy: {{ .Values.celery.playlog.image.pullPolicy }}
+          command: {{ toJson .Values.celery.playlog.command }}
+          env:
+            {{- range $key, $value := .Values.walrus.env }}
+            - name: {{ $key }}
+              value: "{{ $value }}"
+            {{- end }}
+          envFrom:
+            - secretRef:
+                # install secrets from walrus-env
+                name: {{ .Release.Name }}-env
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-celery-beat
+spec:
+  replicas: {{ .Values.celery.beat.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}-celery-beat
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}-celery-beat
+    spec:
+      containers:
+        - name: celery-beat
+          image: "{{ .Values.celery.beat.image.repository }}:{{ .Values.celery.beat.image.tag }}"
+          imagePullPolicy: {{ .Values.celery.beat.image.pullPolicy }}
+          command: {{ toJson .Values.celery.beat.command }}
+          env:
+            {{- range $key, $value := .Values.walrus.env }}
+            - name: {{ $key }}
+              value: "{{ $value }}"
+            {{- end }}
+          envFrom:
+            - secretRef:
+                # install secrets from walrus-env
+                name: {{ .Release.Name }}-env
