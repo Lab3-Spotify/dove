@@ -37,6 +37,7 @@ n8n:
     N8N_PORT: 5678
     N8N_SECURE_COOKIE: false
     N8N_RUNNERS_ENABLED: true
+    N8N_COMMUNITY_PACKAGES_ALLOW_TOOL_USAGE: true
     WEBHOOK_URL: "http://lab3-n8n.ddns.net"
     TZ: Asia/Taipei
     DB_TYPE: postgresdb
