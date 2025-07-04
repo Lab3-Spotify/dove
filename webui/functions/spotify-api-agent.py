@@ -1,4 +1,4 @@
-# just a copy of the function in the webui UI > Functions > Gugong
+# just a copy of the function in the webui UI > Functions > Spotify API Agent
 
 
 from typing import Optional, Callable, Dict, Any, Tuple
@@ -21,7 +21,7 @@ def extract_event_info(
 class Pipe:
     class Valves(BaseModel):
         n8n_url: str = Field(
-            default="http://n8n.n8n.svc.cluster.local/webhook/4c8d41aa-dd27-4d86-92da-1987ac57b34f"
+            default="http://n8n.n8n.svc.cluster.local/webhook/f0a6a15a-7268-4505-b263-834479a0b571"
         )
         input_field: str = Field(default="chatInput")
         response_field: str = Field(default="output")
@@ -34,8 +34,8 @@ class Pipe:
 
     def __init__(self):
         self.type = "pipe"
-        self.id = "gugong"
-        self.name = "Gugong"
+        self.id = "spotify_api_agent"
+        self.name = "Spotify API agent"
         self.valves = self.Valves()
         self.last_emit_time = 0.0
 
@@ -103,7 +103,7 @@ class Pipe:
         try:
             # Prepare headers and payload
             headers = {
-                "n8n-chat-key": "5ZEG518vj58nOn94BKusjP3DuuksL0Im",
+                "n8n-chat-key-spotify-api-agent": "0BkUk9ZtoLs7aff1OG1T96v18jwJ3oxt",
                 "Content-Type": "application/json",
             }
             payload: Dict[str, Any] = {"sessionId": f"{chat_id}"}
