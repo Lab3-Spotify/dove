@@ -90,11 +90,11 @@ celery:
     image:
       repository: popopopony/walrus
       tag: latest
-      pullPolicy: IfNotPresent
+      pullPolicy: Always
 
   beat:
     replicaCount: 1
     image:
       repository: popopopony/walrus
       tag: latest
-      pullPolicy: IfNotPresent
+      pullPolicy: Always
