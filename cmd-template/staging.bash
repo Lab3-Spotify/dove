@@ -87,6 +87,15 @@ kubectl rollout restart deployment walrus-redis -n walrus
 
 
 
+# =============== heron ===============
+# update heron staging settings
+helm upgrade --install heron . -f values/staging.yaml --namespace heron --create-namespace
+
+# force recreate walrus pods
+kubectl rollout restart deployment heron -n heron
+
+
+
 
 # =============== HTTPS ===============
 

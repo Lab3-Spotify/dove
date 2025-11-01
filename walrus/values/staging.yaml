@@ -18,8 +18,9 @@ walrus:
     annotations:
       cert-manager.io/cluster-issuer: letsencrypt
       nginx.ingress.kubernetes.io/ssl-redirect: "true"
-    
-  env: {}
+
+  env:
+    HERON_BASE_URL: "https://lab3-heron.ddns.net"
 
 
 redis: 

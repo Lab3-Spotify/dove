@@ -1,0 +1,41 @@
+heron:
+  replicaCount: 1
+
+  image:
+    repository: popopopony/heron
+    tag: latest
+    pullPolicy: Always
+
+  service:
+    type: ClusterIP
+    port: 80
+    targetPort: 80
+
+  ingress:
+    enabled: true
+    className: "nginx"
+    annotations:
+      cert-manager.io/cluster-issuer: letsencrypt
+      nginx.ingress.kubernetes.io/ssl-redirect: "true"
+
+    host: lab3-heron.ddns.net
+    paths:
+      path: /
+      pathType: Prefix
+
+  # 健康檢查
+  livenessProbe:
+    httpGet:
+      path: /health
+      port: 80
+    initialDelaySeconds: 10
+    periodSeconds: 30
+    timeoutSeconds: 5
+
+  readinessProbe:
+    httpGet:
+      path: /health
+      port: 80
+    initialDelaySeconds: 5
+    periodSeconds: 10
+    timeoutSeconds: 3
