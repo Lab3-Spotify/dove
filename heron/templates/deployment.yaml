@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: {{ .Release.Name }}
+spec:
+  replicas: {{ .Values.heron.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}
+    spec:
+      containers:
+        - name: {{ .Release.Name }}
+          image: "{{ .Values.heron.image.repository }}:{{ .Values.heron.image.tag }}"
+          imagePullPolicy: {{ .Values.heron.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.heron.service.targetPort }}
+              protocol: TCP
+          {{- if .Values.heron.livenessProbe }}
+          livenessProbe:
+            {{- toYaml .Values.heron.livenessProbe | nindent 12 }}
+          {{- end }}
+          {{- if .Values.heron.readinessProbe }}
+          readinessProbe:
+            {{- toYaml .Values.heron.readinessProbe | nindent 12 }}
+          {{- end }}
+          {{- if .Values.heron.resources }}
+          resources:
+            {{- toYaml .Values.heron.resources | nindent 12 }}
+          {{- end }}

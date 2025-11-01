@@ -1,0 +1,28 @@
+{{- if .Values.heron.ingress.enabled -}}
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ .Release.Name }}-ingress
+  namespace: {{ .Release.Namespace }}
+  annotations:
+    {{- range $key, $value := .Values.heron.ingress.annotations }}
+    {{ $key }}: "{{ $value }}"
+    {{- end }}
+spec:
+  ingressClassName: {{ .Values.heron.ingress.className }}
+  tls:
+    - hosts:
+        - {{ .Values.heron.ingress.host }}
+      secretName: {{ .Release.Name }}-tls-secret
+  rules:
+    - host: {{ .Values.heron.ingress.host }}
+      http:
+        paths:
+          - path: {{ .Values.heron.ingress.paths.path }}
+            pathType: {{ .Values.heron.ingress.paths.pathType }}
+            backend:
+              service:
+                name: {{ .Release.Name }}
+                port:
+                  number: {{ .Values.heron.service.port }}
+{{- end }}
