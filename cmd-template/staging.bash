@@ -116,18 +116,7 @@ helm history cloudflared -n cloudflare
 
 
 # =============== HTTPS ===============
-
-# 部署 證書請求服務
-kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.14.4/cert-manager.yaml
-
-# 查看 證書請求服務
-kubectl get pods -n cert-manager
-
-# 部署 cert-manager
-kubectl apply -f clusterissuer.yaml
-
-# 查看 cert-manager
-kubectl get clusterissuer
+# TLS 由 Cloudflare Tunnel 在邊緣終止，cluster 內部不需要 cert-manager
 
 
 

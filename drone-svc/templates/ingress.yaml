@@ -8,10 +8,6 @@ metadata:
     {{- end }}
 spec:
   ingressClassName: {{ .Values.drone.ingress.className }}
-  tls:
-  - hosts:
-      - {{ .Values.drone.ingress.host }}
-    secretName: {{ .Release.Name }}-tls-secret
   rules:
     - host: {{ .Values.drone.ingress.host }}
       http:

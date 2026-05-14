@@ -8,10 +8,6 @@ metadata:
     {{- end }}
 spec:
   ingressClassName: {{ .Values.n8n.ingress.className }}
-  tls:
-    - hosts:
-        - {{ .Values.n8n.ingress.host }}
-      secretName: {{ .Release.Name }}-tls-secret
   rules:
     - host: {{ .Values.n8n.ingress.host }}
       http:
@@ -36,10 +32,6 @@ metadata:
       {{- end }}
 spec:
   ingressClassName: {{ .Values.pysvc.ingress.className }}
-  tls:
-    - hosts:
-        - {{ .Values.pysvc.ingress.host }}
-      secretName: {{ .Release.Name }}-tls-secret
   rules:
   - host: {{ .Values.pysvc.ingress.host }}
     http:

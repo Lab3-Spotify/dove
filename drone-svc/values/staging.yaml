@@ -24,6 +24,8 @@ drone:
     DRONE_SERVER_PROTO: https
     DRONE_REPOSITORY_FILTER: Lab3-Spotify
     DRONE_DATABASE_DRIVER: postgres
+    DRONE_COOKIE_SECURE: "false"
+    DRONE_SECRET_PLUGIN_ENDPOINT: http://drone-kubernetes-secrets.drone.svc.cluster.local:3000
 
 db:
   replicaCount: 1

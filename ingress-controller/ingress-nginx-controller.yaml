@@ -24,6 +24,7 @@ controller:
   config:
     use-forwarded-headers: "true"  # 正確傳遞 X-Forwarded-*
     proxy-body-size: "64m"         # Drone 上傳大型 Artifact 可能需要
+
     # 以下可視需求再開
     # proxy-buffer-size: "16k"
     # keep-alive: "60"
