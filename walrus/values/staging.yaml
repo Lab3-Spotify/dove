@@ -14,13 +14,11 @@ walrus:
   ingress:
     enabled: true
     className: nginx
-    host: lab3-walrus.ddns.net
-    annotations:
-      cert-manager.io/cluster-issuer: letsencrypt
-      nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    host: walrus.lab3.website
+    annotations: {}
 
   env:
-    HERON_BASE_URL: "https://lab3-heron.ddns.net"
+    HERON_BASE_URL: "https://heron.lab3.website"
 
 
 redis: 

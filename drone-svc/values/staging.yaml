@@ -14,16 +14,14 @@ drone:
   ingress:
     enabled: true
     className: nginx
-    host: lab3-drone.ddns.net
-    annotations:
-      cert-manager.io/cluster-issuer: letsencrypt
-      nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    host: drone.lab3.website
+    annotations: {}
 
   env:
-    DRONE_SERVER_ROOT: http://lab3-drone.ddns.net
+    DRONE_SERVER_ROOT: https://drone.lab3.website
     DRONE_GITHUB_SERVER: https://github.com
-    DRONE_SERVER_HOST: lab3-drone.ddns.net
-    DRONE_SERVER_PROTO: http
+    DRONE_SERVER_HOST: drone.lab3.website
+    DRONE_SERVER_PROTO: https
     DRONE_REPOSITORY_FILTER: Lab3-Spotify
     DRONE_DATABASE_DRIVER: postgres
 

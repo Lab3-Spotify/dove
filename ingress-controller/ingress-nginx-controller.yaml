@@ -7,9 +7,7 @@ controller:
   hostNetwork: false          # 關掉
   service:
     enabled: true
-    type: LoadBalancer
-    loadBalancerIP: ""        # Docker Desktop 不能固定；留空
-    externalTrafficPolicy: Local
+    type: ClusterIP
 
   # IngressClass 資源（與 Ingress 規則中 ingressClassName 對應）
   ingressClassResource:
