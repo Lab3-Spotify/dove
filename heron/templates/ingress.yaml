@@ -10,10 +10,6 @@ metadata:
     {{- end }}
 spec:
   ingressClassName: {{ .Values.heron.ingress.className }}
-  tls:
-    - hosts:
-        - {{ .Values.heron.ingress.host }}
-      secretName: {{ .Release.Name }}-tls-secret
   rules:
     - host: {{ .Values.heron.ingress.host }}
       http:
