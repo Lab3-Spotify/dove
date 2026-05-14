@@ -14,11 +14,9 @@ heron:
   ingress:
     enabled: true
     className: "nginx"
-    annotations:
-      cert-manager.io/cluster-issuer: letsencrypt
-      nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    annotations: {}
 
-    host: lab3-heron.ddns.net
+    host: heron.lab3.website
     paths:
       path: /
       pathType: Prefix

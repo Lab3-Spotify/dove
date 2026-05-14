@@ -97,6 +97,24 @@ kubectl rollout restart deployment heron -n heron
 
 
 
+# =============== cloudflare tunnel ===============
+
+# 加入 helm repo（只需執行一次）
+helm repo add cloudflare https://cloudflare.github.io/helm-charts
+helm repo update
+
+# 部署 cloudflared
+helm upgrade --install cloudflared cloudflare/cloudflared -f values/staging.yaml -f secrets/staging.yaml --namespace cloudflare --create-namespace
+
+# force recreate pods
+kubectl rollout restart deployment cloudflared -n cloudflare
+
+# check release history
+helm history cloudflared -n cloudflare
+
+
+
+
 # =============== HTTPS ===============
 
 # 部署 證書請求服務
