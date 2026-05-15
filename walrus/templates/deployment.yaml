@@ -12,6 +12,10 @@ spec:
       labels:
         app: {{ .Release.Name }}
     spec:
+      initContainers:
+        - name: wait-for-db
+          image: busybox
+          command: ['sh', '-c', 'until nc -z {{ .Release.Name }}-db 5432; do echo waiting for db; sleep 2; done']
       containers:
         - name: {{ .Release.Name }}
           image: "{{ .Values.walrus.image.repository }}:{{ .Values.walrus.image.tag }}"
