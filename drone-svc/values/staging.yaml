@@ -46,4 +46,4 @@ db:
   storage: 
     size: 10Gi
     reclaim_policy: Retain
-    hostPathTemplate: /run/desktop/mnt/host/d/Spotify-workspace/familiarity-playlist/dove/{{ .Release.Name }}/{{ .Release.Name }}-db
+    hostPathTemplate: /mnt/c/k3d-volumes/{{ .Release.Name }}/{{ .Release.Name }}-db

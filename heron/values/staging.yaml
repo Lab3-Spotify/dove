@@ -2,7 +2,7 @@ heron:
   replicaCount: 1
 
   image:
-    repository: popopopony/heron
+    repository: lislab3morris/heron
     tag: latest
     pullPolicy: Always
 

@@ -2,7 +2,7 @@ walrus:
   replicaCount: 1
 
   image:
-    repository: popopopony/walrus
+    repository: lislab3morris/walrus
     tag: latest
     pullPolicy: Always
 
@@ -37,7 +37,7 @@ redis:
   storage: 
     size: 10Gi
     reclaim_policy: Retain
-    hostPathTemplate: /run/desktop/mnt/host/d/Spotify-workspace/familiarity-playlist/dove/{{ .Release.Name }}/{{ .Release.Name }}-redis
+    hostPathTemplate: /mnt/c/k3d-volumes/{{ .Release.Name }}/{{ .Release.Name }}-redis
 
   env: {}
 
@@ -58,7 +58,7 @@ db:
   storage: 
     size: 10Gi
     reclaim_policy: Retain
-    hostPathTemplate: /run/desktop/mnt/host/d/Spotify-workspace/familiarity-playlist/dove/{{ .Release.Name }}/{{ .Release.Name }}-db
+    hostPathTemplate: /mnt/c/k3d-volumes/{{ .Release.Name }}/{{ .Release.Name }}-db
 
 rabbitmq:
   replicaCount: 1
@@ -78,7 +78,7 @@ rabbitmq:
   storage:
     size: 10Gi
     reclaim_policy: Retain
-    hostPathTemplate: /run/desktop/mnt/host/d/Spotify-workspace/familiarity-playlist/dove/{{ .Release.Name }}/{{ .Release.Name }}-rabbitmq
+    hostPathTemplate: /mnt/c/k3d-volumes/{{ .Release.Name }}/{{ .Release.Name }}-rabbitmq
 
   env: {}
 
@@ -87,13 +87,13 @@ celery:
     replicaCount: 1
     queue: playlog_q
     image:
-      repository: popopopony/walrus
+      repository: lislab3morris/walrus
       tag: latest
       pullPolicy: Always
 
   beat:
     replicaCount: 1
     image:
-      repository: popopopony/walrus
+      repository: lislab3morris/walrus
       tag: latest
       pullPolicy: Always

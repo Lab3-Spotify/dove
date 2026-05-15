@@ -27,7 +27,7 @@ n8n:
   storage: 
     size: 10Gi
     reclaim_policy: Retain
-    hostPathTemplate: /run/desktop/mnt/host/d/Spotify-workspace/familiarity-playlist/dove/{{ .Release.Name }}/{{ .Release.Name }}-data
+    hostPathTemplate: /mnt/c/k3d-volumes/{{ .Release.Name }}/{{ .Release.Name }}-data
 
   env:
     N8N_BASIC_AUTH_ACTIVE: true
@@ -61,7 +61,7 @@ db:
   storage: 
     size: 10Gi
     reclaim_policy: Retain
-    hostPathTemplate: /run/desktop/mnt/host/d/Spotify-workspace/familiarity-playlist/dove/{{ .Release.Name }}/{{ .Release.Name }}-data/{{ .Release.Name }}-db
+    hostPathTemplate: /mnt/c/k3d-volumes/{{ .Release.Name }}/{{ .Release.Name }}-data/{{ .Release.Name }}-db
 
   persistence:
     size: 10Gi
@@ -99,4 +99,4 @@ pysvc:
   storage: 
     size: 10Gi
     reclaim_policy: Retain
-    hostPathTemplate: /run/desktop/mnt/host/d/Spotify-workspace/familiarity-playlist/dove/{{ .Release.Name }}/{{ .Release.Name }}-data/serverless
+    hostPathTemplate: /mnt/c/k3d-volumes/{{ .Release.Name }}/{{ .Release.Name }}-data/serverless

@@ -1,0 +1,95 @@
+releases:
+  # ── infra ──────────────────────────────────────────────
+  - name: ingress-nginx
+    namespace: ingress-nginx
+    createNamespace: true
+    chart: ingress-nginx/ingress-nginx
+    labels:
+      group: infra
+    values:
+      - ingress-controller/ingress-nginx-controller.yaml
+
+  - name: cloudflared
+    namespace: cloudflare
+    createNamespace: true
+    chart: cloudflare/cloudflare-tunnel-remote
+    needs:
+      - ingress-nginx/ingress-nginx
+    labels:
+      group: infra
+    values:
+      - cloudflare/values/staging.yaml
+      - cloudflare/secrets/staging.yaml
+
+  - name: drone-svc
+    namespace: drone
+    createNamespace: true
+    chart: ./drone-svc
+    needs:
+      - ingress-nginx/ingress-nginx
+    labels:
+      group: infra
+    values:
+      - drone-svc/values/staging.yaml
+      - drone-svc/secrets/staging.yaml
+
+  - name: drone-runner
+    namespace: drone
+    createNamespace: true
+    chart: ./drone-runner
+    needs:
+      - drone/drone-svc
+    labels:
+      group: infra
+    values:
+      - drone-runner/values/staging.yaml
+      - drone-runner/secrets/staging.yaml
+
+  # ── spotify ────────────────────────────────────────────
+  - name: heron
+    namespace: heron
+    createNamespace: true
+    chart: ./heron
+    needs:
+      - ingress-nginx/ingress-nginx
+    labels:
+      group: spotify
+    values:
+      - heron/values/staging.yaml
+
+  - name: walrus
+    namespace: walrus
+    createNamespace: true
+    chart: ./walrus
+    needs:
+      - ingress-nginx/ingress-nginx
+    labels:
+      group: spotify
+    values:
+      - walrus/values/staging.yaml
+      - walrus/secrets/staging.yaml
+
+  # ── gugong ─────────────────────────────────────────────
+  - name: n8n
+    namespace: n8n
+    createNamespace: true
+    chart: ./n8n
+    needs:
+      - ingress-nginx/ingress-nginx
+    labels:
+      group: gugong
+    values:
+      - n8n/values/staging.yaml
+      - n8n/secrets/staging.yaml
+
+  - name: webui
+    namespace: webui
+    createNamespace: true
+    chart: ./webui
+    needs:
+      - ingress-nginx/ingress-nginx
+    labels:
+      group: gugong
+    values:
+      - webui/values/staging.yaml
+      - webui/secrets/staging.yaml
