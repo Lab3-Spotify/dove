@@ -4,6 +4,7 @@ releases:
     namespace: ingress-nginx
     createNamespace: true
     chart: ingress-nginx/ingress-nginx
+    wait: true
     labels:
       group: infra
     values:
@@ -25,6 +26,7 @@ releases:
     namespace: drone
     createNamespace: true
     chart: ./drone-svc
+    wait: true
     needs:
       - ingress-nginx/ingress-nginx
     labels:
@@ -68,6 +70,21 @@ releases:
     values:
       - walrus/values/staging.yaml
       - walrus/secrets/staging.yaml
+
+  # ── monitoring ─────────────────────────────────────────
+  - name: glitchtip
+    namespace: glitchtip
+    createNamespace: true
+    chart: ./glitchtip
+    disableValidation: true
+    kubeVersion: "1.29"
+    needs:
+      - ingress-nginx/ingress-nginx
+    labels:
+      group: monitoring
+    values:
+      - glitchtip/values/staging.yaml
+      - glitchtip/secrets/staging.yaml
 
   # ── gugong ─────────────────────────────────────────────
   - name: n8n

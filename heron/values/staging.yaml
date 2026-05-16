@@ -1,6 +1,11 @@
 heron:
   replicaCount: 1
 
+  env:
+    WALRUS_API_BASE_URL: "https://walrus.lab3.website"
+    ENV: "staging"
+    APP_TITLE: "LISLab3 Spotify Experiment"
+
   image:
     repository: lislab3morris/heron
     tag: latest
