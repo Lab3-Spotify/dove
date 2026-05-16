@@ -52,6 +52,11 @@ graph TB
             WEBUI_DB[("PostgreSQL")]
         end
 
+        subgraph monitoring["namespace: glitchtip"]
+            GLITCHTIP["glitchtip\n(Error Tracking)"]
+            GLITCHTIP_DB[("PostgreSQL")]
+        end
+
         subgraph storage["💾 PersistentVolumes"]
             PV["/mnt/c/k3d-volumes/\n(Retain Policy)"]
         end
@@ -66,6 +71,10 @@ graph TB
     NGINX --> WALRUS
     NGINX --> N8N
     NGINX --> WEBUI
+    NGINX --> GLITCHTIP
+
+    GLITCHTIP --- GLITCHTIP_DB
+    GLITCHTIP_DB -.-> PV
 
     DRONE_SVC --- DRONE_DB
     DRONE_SVC --- DRONE_SECRETS
@@ -143,22 +152,38 @@ sequenceDiagram
 ## Helmfile 部署群組
 
 ```mermaid
-graph LR
-    subgraph infra["group: infra"]
-        A[ingress-nginx] --> B[cloudflared]
-        A --> C[drone-svc]
-        C --> D[drone-runner]
+graph TD
+    NGINX["🔀 ingress-nginx\n(所有群組共用入口)"]
+
+    subgraph infra["⚙️ group: infra"]
+        direction LR
+        CF["cloudflared"]
+        DRONE["drone-svc"] --> RUNNER["drone-runner"]
     end
 
-    subgraph spotify["group: spotify"]
-        A --> E[heron]
-        A --> F[walrus]
+    subgraph spotify["🎵 group: spotify"]
+        direction LR
+        HERON["heron"]
+        WALRUS["walrus"]
     end
 
-    subgraph gugong["group: gugong"]
-        A --> G[n8n]
-        A --> H[webui]
+    subgraph gugong["🏯 group: gugong"]
+        direction LR
+        N8N["n8n"]
+        WEBUI["webui"]
     end
+
+    subgraph monitoring["📊 group: monitoring"]
+        GT["glitchtip"]
+    end
+
+    NGINX --> CF
+    NGINX --> DRONE
+    NGINX --> HERON
+    NGINX --> WALRUS
+    NGINX --> N8N
+    NGINX --> WEBUI
+    NGINX --> GT
 ```
 
 所有服務都依賴 `ingress-nginx` 作為入口點，`drone-runner` 額外依賴 `drone-svc` 啟動完畢。
@@ -180,11 +205,10 @@ dove/
 │   └── secrets/               # git-secret 加密
 │
 ├── drone-svc/                 # Drone CI Server + PostgreSQL
-│   ├── templates/
-│   │   ├── statefulset.yaml   # Drone Server
-│   │   ├── pipeline-secrets.yaml
-│   │   └── secrets-extension.yaml  # Kubernetes Secret Plugin
-│   └── authorize-drone-ci.yaml    # SA 永久 Token
+│   └── templates/
+│       ├── statefulset.yaml   # Drone Server
+│       ├── pipeline-secrets.yaml
+│       └── secrets-extension.yaml  # Kubernetes Secret Plugin
 │
 ├── drone-runner/              # Drone Kubernetes Runner
 │   └── templates/
@@ -200,9 +224,8 @@ dove/
 ├── webui/                     # Open WebUI (lab3-gugong.ddns.net)
 │   └── functions/             # └── PostgreSQL
 │
-└── cmd-template/              # 常用指令速查
-    ├── staging.bash
-    └── gugong.bash
+└── glitchtip/                 # Error Tracking (glitchtip.lab3.website)
+    └── templates/             # └── PostgreSQL
 ```
 
 ---
@@ -220,8 +243,10 @@ dove/
 ├── n8n/
 │   ├── n8n-data/         (n8n 工作流資料)
 │   └── n8n-db/           (PostgreSQL)
-└── webui/
-    └── webui-db/         (PostgreSQL)
+├── webui/
+│   └── webui-db/         (PostgreSQL)
+└── glitchtip/
+    └── glitchtip-db/     (PostgreSQL)
 ```
 
 ---
@@ -292,3 +317,4 @@ helmfile apply -l name=drone-runner
 | walrus | spotify | `walrus.lab3.website` | Backend API |
 | n8n | gugong | `lab3-n8n.ddns.net` | 自動化工作流 |
 | webui | gugong | `lab3-gugong.ddns.net` | Open WebUI (AI 介面) |
+| glitchtip | monitoring | `glitchtip.lab3.website` | 錯誤追蹤 |

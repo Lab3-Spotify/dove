@@ -1,0 +1,9 @@
+dependencies:
+- name: glitchtip
+  repository: https://gitlab.com/api/v4/projects/16325141/packages/helm/stable
+  version: 8.2.0
+- name: postgresql
+  repository: https://charts.bitnami.com/bitnami
+  version: 18.6.6
+digest: sha256:ab55534023bfd61d0876dab1f393775f2d2ab2b624a0c5078f1797664c409fea
+generated: "2026-05-16T15:45:42.24934+08:00"

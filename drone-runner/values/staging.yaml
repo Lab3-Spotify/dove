@@ -14,6 +14,7 @@ env:
   DRONE_RUNNER_NAMESPACE: drone
   DRONE_NAMESPACE_DEFAULT: drone
   DRONE_SECRET_PLUGIN_ENDPOINT: http://drone-kubernetes-secrets.drone.svc.cluster.local:3000
+  DRONE_SERVICE_ACCOUNT_DEFAULT: drone-runner
 
 
 # DRONE_RUNNER_LABELS 格式要求不能用 / (repo=Lab3-Spotify/walrus 不合法)

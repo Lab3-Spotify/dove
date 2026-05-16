@@ -1,0 +1,90 @@
+# ── PV/PVC ─────────────────────────────────────────────
+storage:
+  size: 10Gi
+  reclaimPolicy: Retain
+  hostPath: /mnt/c/k3d-volumes/glitchtip/glitchtip-db
+
+# ── glitchtip app ──────────────────────────────────────
+app:
+  glitchtip:
+    domain: https://glitchtip.lab3.website
+    database:
+      existingSecret: glitchtip-db-secret
+      existingSecretKey: DATABASE_URL
+  web:
+    embedWorker: true
+    replicaCount: 1
+    resources:
+      limits:
+        cpu: 500m
+        memory: 512Mi
+      requests:
+        cpu: 100m
+        memory: 256Mi
+    ingress:
+      enabled: true
+      className: nginx
+      annotations:
+        nginx.ingress.kubernetes.io/rewrite-target: /
+      hosts:
+        - host: glitchtip.lab3.website
+          paths:
+            - path: /
+              pathType: Prefix
+      tls: []
+    lifecycle:
+      preStop:
+        exec:
+          command: ["/bin/sleep", "5"]
+
+  extraEnvVars:
+    - name: EMAIL_URL
+      valueFrom:
+        secretKeyRef:
+          name: glitchtip-smtp-secret
+          key: EMAIL_URL
+    - name: DEFAULT_FROM_EMAIL
+      valueFrom:
+        secretKeyRef:
+          name: glitchtip-smtp-secret
+          key: DEFAULT_FROM_EMAIL
+
+  worker:
+    enabled: false
+  valkey:
+    enabled: true
+    replicaCount: 1
+    dataStorage:
+      enabled: false
+  postgresql:
+    enabled: false
+
+# ── postgresql ─────────────────────────────────────────
+postgresql:
+  auth:
+    database: glitchtip
+  primary:
+    podSecurityContext:
+      enabled: true
+      fsGroup: 1001
+    initContainers:
+      - name: fix-permissions
+        image: busybox
+        securityContext:
+          runAsUser: 0
+        command: ["chown", "-R", "1001:1001", "/bitnami/postgresql"]
+        volumeMounts:
+          - name: data
+            mountPath: /bitnami/postgresql
+    resources:
+      limits:
+        cpu: 500m
+        memory: 512Mi
+      requests:
+        cpu: 100m
+        memory: 256Mi
+    persistence:
+      enabled: true
+      size: 10Gi
+      existingClaim: glitchtip-db-pvc
+      storageClass: ""

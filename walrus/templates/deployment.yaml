@@ -22,7 +22,7 @@ spec:
           imagePullPolicy: {{ .Values.walrus.image.pullPolicy }}
           ports:
             - containerPort: {{ .Values.walrus.service.targetPort }}
-          command: ["/bin/sh", "-c", "/usr/src/app/entrypoint.sh"]
+          command: ["/usr/src/app/entrypoints/server.sh"]
           env:
             {{- range $key, $value := .Values.walrus.env }}
             - name: {{ $key }}
@@ -52,7 +52,7 @@ spec:
         - name: {{ .Release.Name }}-celery-playlog
           image: "{{ .Values.celery.playlog.image.repository }}:{{ .Values.celery.playlog.image.tag }}"
           imagePullPolicy: {{ .Values.celery.playlog.image.pullPolicy }}
-          command: ["/usr/src/app/entrypoint-celery.sh"]
+          command: ["/usr/src/app/entrypoints/celery.sh"]
           args: ["playlog_q"]
           env:
             {{- range $key, $value := .Values.walrus.env }}

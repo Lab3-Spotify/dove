@@ -23,6 +23,13 @@ spec:
             - name: http
               containerPort: {{ .Values.heron.service.targetPort }}
               protocol: TCP
+          {{- if .Values.heron.env }}
+          env:
+            {{- range $key, $value := .Values.heron.env }}
+            - name: {{ $key }}
+              value: {{ $value | quote }}
+            {{- end }}
+          {{- end }}
           {{- if .Values.heron.livenessProbe }}
           livenessProbe:
             {{- toYaml .Values.heron.livenessProbe | nindent 12 }}
